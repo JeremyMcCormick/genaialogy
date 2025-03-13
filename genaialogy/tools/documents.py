@@ -31,8 +31,8 @@ class DocumentLoader:
         index.storage_context.persist(storage_dir)
         return index
 
-    def from_directory(self):
-        """Load .pdf, .doc, .docx, and .txt files from a directory into LlamaIndex as Documents."""
+    def load(self):
+        """Load documents from a directory into LlamaIndex as Documents."""
 
         documents = []
 

@@ -145,11 +145,12 @@ class DropboxClient:
             print(file_path, "->", target_path)
             f.write(res.content)
 
-    def download_all_files(self, file_paths, local_path):
+    def download(self, file_paths, local_path):
         """
         Download all files from a list of file paths.
         """
         os.makedirs(local_path, exist_ok=True)
+        original_working_dir = os.getcwd()
         os.chdir(local_path)
         try:
             for file_path in file_paths:
@@ -159,7 +160,7 @@ class DropboxClient:
                 except Exception as err:
                     print("Failed to download file", file_path, ":", err)
         finally:
-            os.chdir("/content")
+            os.chdir(original_working_dir)
 
     def get_local_filename(self, filename):
         """
