@@ -18,6 +18,7 @@ class DocumentLoader:
     def __init__(
         self, directory, text_output_dir=None, file_extensions=DEFAULT_FILE_EXTENSIONS
     ):
+        assert directory is not None, "Directory must be provided"
         self.documents = None
         self.text_output_dir = text_output_dir
         self.file_extensions = file_extensions
@@ -26,13 +27,13 @@ class DocumentLoader:
     def to_index(self, storage_dir="index_storage"):
         """Load documents into LlamaIndex."""
         if not self.documents:
-            self.from_directory()
+            self.load()
         index = VectorStoreIndex.from_documents(self.documents)
         index.storage_context.persist(storage_dir)
         return index
 
     def load(self):
-        """Load documents from a directory into LlamaIndex as Documents."""
+        """Create LlamaIndex documents from files in a directory."""
 
         documents = []
 
@@ -91,7 +92,7 @@ class DocumentLoader:
         self.documents = documents
 
     @classmethod
-    def is_text_empty(text):
+    def is_text_empty(cls, text):
         """
         Check if text is empty after removing all non-printable characters.
         """
@@ -102,11 +103,11 @@ class DocumentLoader:
         return len(cleaned_text) == 0
 
     @classmethod
-    def word_count(text):
+    def word_count(cls, text):
         return len(re.findall(r"\b\w+\b", text))
 
     @classmethod
-    def extract_text_from_pdf(pdf_path):
+    def extract_text_from_pdf(cls, pdf_path):
         """
         Extract text from a PDF file.
         """
@@ -119,7 +120,7 @@ class DocumentLoader:
             return ""
 
     @classmethod
-    def extract_text_from_docx(doc_path):
+    def extract_text_from_docx(cls, doc_path):
         """
         Extract text from a .docx file.
         """
@@ -131,7 +132,7 @@ class DocumentLoader:
             return ""
 
     @classmethod
-    def extract_text_from_doc(doc_path):
+    def extract_text_from_doc(cls, doc_path):
         """
         Extract text from a .doc file using LibreOffice in Google Colab.
         """
@@ -158,7 +159,7 @@ class DocumentLoader:
             return ""
 
     @classmethod
-    def extract_text_from_word(doc_path):
+    def extract_text_from_word(cls, doc_path):
         """
         Extract text from a Word file (.doc or .docx).
         Uses python-docx for .docx and pandoc for .doc.
@@ -172,7 +173,7 @@ class DocumentLoader:
             return ""
 
     @classmethod
-    def extract_text_from_txt(txt_path):
+    def extract_text_from_txt(cls, txt_path):
         """
         Extract text from a plain text (.txt) file.
         """
@@ -184,7 +185,7 @@ class DocumentLoader:
             return ""
 
     @classmethod
-    def extract_text_from_rtf(rtf_path):
+    def extract_text_from_rtf(cls, rtf_path):
         """
         Extract text from an RTF file.
 
