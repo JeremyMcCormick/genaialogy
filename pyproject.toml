@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genaialogy"
+version = "0.1.0"
+description = "A set of AI-powered genealogical tools using agents."
+authors = [
+    { name = "Jeremy McCormick", email = "fake@example.com" }
+]
+readme = "README.md"
+license = { text = "Creative Commons Attribution-NonCommercial 4.0 International License" }
+keywords = ["genealogy", "AI", "family tree", "history", "agents"]
+requires-python = ">=3.11"
+dependencies = [
+    "crewai[tools]",
+    "docx2txt",
+    "dropbox",
+    "llama-index",
+    "python-gedcom",
+    "pypdf",
+    "python-docx",
+    "striprtf"
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/genaialogy"
+Repository = "https://github.com/yourusername/genaialogy"
+Issues = "https://github.com/yourusername/genaialogy/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["genaialogy*"]
