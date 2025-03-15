@@ -128,8 +128,7 @@ class PathFinder:
 
         # Ensure both individuals were found
         if not ancestor or not descendant:
-            print("❌ Error: One or both individuals not found in the GEDCOM file.")
-            return
+            raise Exception("❌ Error: One or both individuals not found in the GEDCOM file.")
 
         # Find path
         path = self.find_path_recursive(ancestor, descendant)
