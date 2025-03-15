@@ -6,9 +6,11 @@ from gedcom.element.individual import IndividualElement
 
 class PathFinder:
 
-    def __init__(self, gedcom_file):
+    def __init__(self, gedcom_file, ancestor_name, descendant_name):
         self.parser = Parser()
         self.parser.parse_file(gedcom_file)
+        self.ancestor_name = ancestor_name
+        self.descendant_name = descendant_name
 
     @classmethod
     def format_name(cls, name_tuple):
@@ -111,7 +113,7 @@ class PathFinder:
             print(f"{indent}❌ No path found from {name} → Backtracking")
         return None  # No path found
 
-    def find_ancestor_to_descendant_path(self, ancestor_name, descendant_name):
+    def run(self):
         """
         Find and print the path from an ancestor to a descendant in a GEDCOM file.
 
@@ -121,8 +123,8 @@ class PathFinder:
         :return: None (prints the path if found).
         """
         # Retrieve IndividualElement objects for ancestor and descendant
-        ancestor = self.get_individual_by_name(ancestor_name)
-        descendant = self.get_individual_by_name(descendant_name)
+        ancestor = self.get_individual_by_name(self.ancestor_name)
+        descendant = self.get_individual_by_name(self.descendant_name)
 
         # Ensure both individuals were found
         if not ancestor or not descendant:
@@ -130,12 +132,12 @@ class PathFinder:
             return
 
         # Find path
-        path = self.find_path(ancestor, descendant)
+        self.path = self.find_path(ancestor, descendant)
 
         # Print results
-        if path:
+        if self.path:
             print("\n✅ Path from ancestor to descendant:")
-            for person in path:
+            for person in self.path:
                 print(f"→ {self.format_name(person.get_name())}")
         else:
             print("❌ No path found between the given individuals.")
