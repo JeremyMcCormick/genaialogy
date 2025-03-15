@@ -32,7 +32,7 @@ class PathFinder:
                     return element
         return None
 
-    def find_path(
+    def find_path_recursive(
         self,
         current_person,
         target_person,
@@ -113,7 +113,7 @@ class PathFinder:
             print(f"{indent}❌ No path found from {name} → Backtracking")
         return None  # No path found
 
-    def run(self):
+    def find_path(self):
         """
         Find and print the path from an ancestor to a descendant in a GEDCOM file.
 
@@ -132,12 +132,15 @@ class PathFinder:
             return
 
         # Find path
-        self.path = self.find_path(ancestor, descendant)
+        path = self.find_path_recursive(ancestor, descendant)
 
         # Print results
-        if self.path:
+        if path:
+            formatted_path = [self.format_name(person.get_name()) for person in path]
             print("\n✅ Path from ancestor to descendant:")
-            for person in self.path:
-                print(f"→ {self.format_name(person.get_name())}")
+            for name in formatted_path:
+                print(f"→ {name}")
         else:
-            print("❌ No path found between the given individuals.")
+            raise Exception("❌ No path found between the given individuals.")
+
+        return formatted_path
