@@ -99,7 +99,7 @@ class PathFinder:
                 if debug:
                     print(f"{indent}  ↳ Checking child: {child_name}")
 
-                result = self.find_path(
+                result = self.find_path_recursive(
                     child, target_person, path[:], visited, depth + 1
                 )  # Pass a copy of the path
                 if result:
