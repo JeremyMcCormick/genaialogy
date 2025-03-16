@@ -24,6 +24,11 @@ dependencies = [
     "striprtf"
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest >= 3.2"
+]
+
 [project.urls]
 Homepage = "https://github.com/yourusername/genaialogy"
 Repository = "https://github.com/yourusername/genaialogy"
@@ -32,3 +37,4 @@ Issues = "https://github.com/yourusername/genaialogy/issues"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["genaialogy*"]
+
