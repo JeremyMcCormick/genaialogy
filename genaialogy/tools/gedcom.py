@@ -232,15 +232,6 @@ class FamilyTree:
         else:
             return None
 
-class PathFinder:
-    """
-    A class for finding paths between individuals in a family tree.
-    """
-
-    def __init__(self, gedcom_file):
-        self.parser = Parser()
-        self.parser.parse_file(gedcom_file)
-
     def find_path_recursive(
         self,
         current_person,
@@ -332,8 +323,8 @@ class PathFinder:
         :return: None (prints the path if found).
         """
         # Retrieve IndividualElement objects for ancestor and descendant
-        ancestor = find_individual_by_name(self.parser, ancestor_name)
-        descendant = find_individual_by_name(self.parser, descendant_name)
+        ancestor = self.find_individual_by_name(ancestor_name)
+        descendant = self.find_individual_by_name(descendant_name)
 
         # Ensure both individuals were found
         if not ancestor or not descendant:
