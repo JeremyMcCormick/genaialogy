@@ -13,6 +13,19 @@ class FamilyTree:
     """
     def __init__(self, parser: Parser):
         self.parser = parser
+        self.root_notes = {}
+        self.cache_notes()
+
+    def cache_notes(self):
+        """
+        Cache the notes from the GEDCOM file.
+        """
+        for element in self.parser.get_root_child_elements():
+            if element.get_tag() == 'NOTE':
+                pointer = element.get_pointer()
+                value = element.get_value()
+                if pointer:
+                    self.root_notes[pointer] = element
 
     def find_individual_by_name(self, name):
         """
@@ -211,20 +224,12 @@ class FamilyTree:
             parser (Parser): GEDCOM parser instance
             person_name (str): Full name of the person
         """
-        root_notes = {}
-        for element in self.parser.get_root_child_elements():
-            if element.get_tag() == 'NOTE':
-                pointer = element.get_pointer()
-                value = element.get_value()
-                if pointer:
-                    root_notes[pointer] = element
-
         note_lines = []
         for element in individual.get_child_elements():
             if element.get_tag() == 'NOTE':
                 note_ref = element.get_value()
-                if note_ref in root_notes:
-                    note_element = root_notes[note_ref]
+                if note_ref in self.root_notes:
+                    note_element = self.root_notes[note_ref]
                     for child in note_element.get_child_elements():
                         note_lines.append(child.get_value().strip())
         if note_lines:
