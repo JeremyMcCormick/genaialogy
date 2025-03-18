@@ -1,3 +1,9 @@
+"""
+Generate biographies and lineage reports from GEDCOM files.
+"""
+
+import sys
+
 from gedcom.parser import Parser
 from gedcom.element.individual import IndividualElement
 from genaialogy.tools.llm import OpenAIClient
@@ -46,3 +52,17 @@ class Biographer:
             f"Generate a short biography for the following individual:\n{individual_info_str}"
         )
         return response
+
+    def write_lineage_report(self, ancestor_name, descendant_name, stream=sys.stdout):
+        """
+        Generate a biographical lineage for a person.
+        """
+        names = self.tree.find_path(ancestor_name, descendant_name)
+        stream.write(f"Biographical Lineage Report for {descendant_name} from {ancestor_name}\n\n")
+        for name in names:
+            bio_text = self.generate_biography(name)
+            stream.write(name + "\n")
+            stream.write("-" * len(name) + "\n")
+            stream.write("\n")
+            stream.write(f"{bio_text}\n\n")
+
