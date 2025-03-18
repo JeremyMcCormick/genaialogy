@@ -3,6 +3,7 @@ Generate biographies and lineage reports from GEDCOM files.
 """
 
 import sys
+import textwrap
 
 from gedcom.parser import Parser
 from gedcom.element.individual import IndividualElement
@@ -63,5 +64,4 @@ class Biographer:
             stream.write(name + "\n")
             stream.write("-" * len(name) + "\n")
             stream.write("\n")
-            stream.write(f"{bio_text}\n\n")
-
+            stream.write(f"{textwrap.fill(bio_text, width=80)}\n\n")
