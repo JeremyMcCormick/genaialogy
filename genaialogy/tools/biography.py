@@ -33,7 +33,7 @@ class Biographer:
             raise ValueError("Invalid input type. Must be a GEDCOM file path or a GEDCOM parser.")
         self.tree = FamilyTree(self.gedcom_parser)
 
-    def generate_biography(self, individual: IndividualElement, dry_run: bool = False) -> str:
+    def generate_biography(self, individual: IndividualElement, dry_run: bool = False, debug: bool = False) -> str:
         """
         Generate a biography for a person.
         """
@@ -43,9 +43,9 @@ class Biographer:
         individual_info = self.tree.dump_individual_info(individual)
         individual_info_str = "\n".join([f"{k}: {v}" for k, v in individual_info.items()])
 
-        print("Individual info:\n", individual_info_str)
-        if dry_run:
-            return "Not generating biography for dry run."
+        if debug:
+            print("Individual info:\n", individual_info_str)
+
         response = self.llm.prompt(
             f"Generate a short biography for the following individual:\n{individual_info_str}"
         )
