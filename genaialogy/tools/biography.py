@@ -33,12 +33,10 @@ class Biographer:
             raise ValueError("Invalid input type. Must be a GEDCOM file path or a GEDCOM parser.")
         self.tree = FamilyTree(self.gedcom_parser)
 
-    def generate_biography(self, person_name, dry_run=False):
+    def generate_biography(self, individual: IndividualElement, dry_run: bool = False) -> str:
         """
         Generate a biography for a person.
         """
-        individual = self.tree.find_individual_by_name(person_name)
-
         if individual is None:
             raise ValueError(f"Individual with name {person_name} not found in GEDCOM file.")
 
@@ -57,10 +55,11 @@ class Biographer:
         """
         Generate a biographical lineage for a person.
         """
-        names = self.tree.find_path(ancestor_name, descendant_name)
+        individuals = self.tree.find_path(ancestor_name, descendant_name)
         stream.write(f"Biographical Lineage Report for {descendant_name} from {ancestor_name}\n\n")
-        for name in names:
-            bio_text = self.generate_biography(name)
+        for individual in individuals:
+            bio_text = self.generate_biography(individual)
+            name = format_name(individual.get_name())
             stream.write(name + "\n")
             stream.write("-" * len(name) + "\n")
             stream.write("\n")

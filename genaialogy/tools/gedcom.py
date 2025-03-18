@@ -1,5 +1,7 @@
 """Tools for working with GEDCOM files."""
 
+from typing import Optional, List
+
 from gedcom.parser import Parser
 from gedcom.element.individual import IndividualElement
 
@@ -42,12 +44,6 @@ class FamilyTree:
         """
         Get a list of children for a given person from a GEDCOM file.
         """
-
-        # Find the individual by name
-        individual = self.find_individual_by_name(format_name(individual.get_name()))
-        if not individual:
-            raise ValueError(f"Person '{person_name}' not found in GEDCOM file")
-
         # Get all families where this person is a parent
         families = self.parser.get_families(individual, "FAMS")
 
@@ -65,13 +61,6 @@ class FamilyTree:
         """
         Get the parents of a given person from a GEDCOM file.
         """
-        person_name = format_name(individual.get_name())
-
-        # Find the individual by name
-        individual = self.find_individual_by_name(person_name)
-        if not individual:
-            raise ValueError(f"Person '{person_name}' not found in GEDCOM file")
-
         # Get the family where this person is a child
         families = self.parser.get_families(individual, "FAMC")
 
@@ -102,12 +91,6 @@ class FamilyTree:
         """
         Get a list of siblings for a given person from a GEDCOM file.
         """
-        person_name = format_name(individual.get_name())
-
-        individual = self.find_individual_by_name(person_name)
-        if not individual:
-            raise ValueError(f"Person '{person_name}' not found in GEDCOM file")
-
         families = self.parser.get_families(individual, "FAMC")
 
         if not families:
@@ -128,8 +111,6 @@ class FamilyTree:
         """
         Get all spouses (wives or husbands) of a given person from a GEDCOM file.
         """
-        person_name = format_name(individual.get_name())
-
         # Get all families where this person is a spouse (FAMS)
         families = self.parser.get_families(individual, "FAMS")
         spouses = []
@@ -175,7 +156,7 @@ class FamilyTree:
 
         return spouses
 
-    def dump_individual_info(self, individual):
+    def dump_individual_info(self, individual: IndividualElement) -> dict:
         """
         Get the information for an individual.
         """
@@ -245,11 +226,10 @@ class FamilyTree:
         visited=None,
         depth=0,
         debug=False,
-    ):
+    ) -> Optional[List[IndividualElement]]:
         """
         Recursively find a path from an ancestor to a descendant in the family tree.
 
-        :param gedcom_parser: Parsed GEDCOM data.
         :param current_person: The current individual being examined.
         :param target_person: The target descendant to find.
         :param path: The list of individuals forming the path from ancestor to descendant.
@@ -318,14 +298,19 @@ class FamilyTree:
             print(f"{indent}❌ No path found from {name} → Backtracking")
         return None  # No path found
 
-    def find_path(self, ancestor_name, descendant_name):
+    def find_path(self, ancestor_name: str, descendant_name: str) -> List[IndividualElement]:
         """
-        Find and print the path from an ancestor to a descendant in a GEDCOM file.
+        Find the path from an ancestor to a descendant in a GEDCOM file.
 
-        :param gedcom_parser: Parsed GEDCOM data.
-        :param ancestor_name: The name of the ancestor.
-        :param descendant_name: The name of the descendant.
-        :return: None (prints the path if found).
+        Args:
+            ancestor_name: The name of the ancestor.
+            descendant_name: The name of the descendant.
+
+        Returns:
+            List[IndividualElement]: List of individuals forming the path from ancestor to descendant.
+
+        Raises:
+            Exception: If one or both individuals are not found, or if no path exists.
         """
         # Retrieve IndividualElement objects for ancestor and descendant
         ancestor = self.find_individual_by_name(ancestor_name)
@@ -338,13 +323,7 @@ class FamilyTree:
         # Find path
         path = self.find_path_recursive(ancestor, descendant)
 
-        # Print results
-        if path:
-            formatted_path = [format_name(person.get_name()) for person in path]
-            print("\n✅ Path from ancestor to descendant:")
-            for name in formatted_path:
-                print(f"→ {name}")
-        else:
+        if not path:
             raise Exception("❌ No path found between the given individuals.")
 
-        return formatted_path
+        return path
